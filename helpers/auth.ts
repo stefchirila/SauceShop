@@ -31,5 +31,7 @@ export async function login(
     const error = page.locator(loginPageLocators.errorMessage);
     await expect(error).toBeVisible();
     await expect(error).toHaveText(options.expectedError);
+  } else {
+    await expect(page).toHaveURL(Strings.inventory);
   }
 }

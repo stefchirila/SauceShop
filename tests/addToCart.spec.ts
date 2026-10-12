@@ -59,7 +59,7 @@ test('Check errors for checkout flow', async ({ page }) => {
     await Cart.clickContinueButton(page);
     await expectCheckoutError(page, Strings.lastNameErr);
 
-    await Cart.fillLasttName(page, 'Chirila');
+    await Cart.fillLastName(page, 'Chirila');
     await Cart.clickContinueButton(page);
     await expectCheckoutError(page, Strings.zipCodeErr);
 

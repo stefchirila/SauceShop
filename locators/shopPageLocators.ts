@@ -1,13 +1,14 @@
-export const shopLocators = {
-  addToCartButton: (productName: string) => {
-  const formattedName = productName.toLowerCase().replace(/\s+/g, '-');
-  return `[data-test="add-to-cart-${formattedName}"]`;
-  },
+/** 'Sauce Labs Backpack' -> 'sauce-labs-backpack', forma folosita in atributele data-test. */
+export const productSlug = (productName: string): string =>
+  productName.toLowerCase().replace(/\s+/g, '-');
 
-  removeFromCartButton: (productName: string) => {
-  const formattedName = productName.toLowerCase().replace(/\s+/g, '-');
-  return `[data-test="remove-${formattedName}"]`;
-  },
+export const shopLocators = {
+  addToCartButton: (productName: string) =>
+    `[data-test="add-to-cart-${productSlug(productName)}"]`,
+
+  removeFromCartButton: (productName: string) =>
+    `[data-test="remove-${productSlug(productName)}"]`,
+
   cartLink: '[data-test="shopping-cart-link"]',
   cartBadge: '[data-test="shopping-cart-badge"]',
 };

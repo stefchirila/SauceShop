@@ -1,3 +1,5 @@
+import { shopLocators } from './shopPageLocators';
+
 export const cartLocators = {
 
   // items
@@ -8,10 +10,8 @@ export const cartLocators = {
   cartItemPrice: '[data-test="inventory-item-price"]',
   cartItemQuantity: '[data-test="item-quantity"]',
   
-  removeFromCartButton: (productName: string) => {
-    const formattedName = productName.toLowerCase().replace(/\s+/g, '-');
-    return `[data-test="remove-${formattedName}"]`;
-  },
+  // Butonul de remove este acelasi element si pe pagina de produse, si in cos.
+  removeFromCartButton: shopLocators.removeFromCartButton,
 
   continueShoppingButton: '[data-test="continue-shopping"]',
 

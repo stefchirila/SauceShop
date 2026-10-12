@@ -2,7 +2,7 @@
 
 End-to-end test suite for [saucedemo.com](https://www.saucedemo.com), built with **Playwright** and **TypeScript**.
 
-It covers the authentication flows (standard user, locked-out account, performance glitch user, invalid credentials), shopping cart management, and the full checkout process including form validation.
+It covers the authentication flows (standard user, locked-out account, performance glitch user, invalid credentials), session handling (logout and the authorization guard on protected pages), product sorting, shopping cart management, and the full checkout process including form validation and the price totals.
 
 ---
 
@@ -36,11 +36,12 @@ No `.env` file or credentials are needed: the test accounts are public and live 
 
 | Command | What it does |
 |---|---|
-| `npm test` | Run the whole suite (9 tests) |
+| `npm test` | Run the whole suite (20 tests) |
 | `npm run test:ui` | Open **UI mode** — interactive runner with timeline, watch mode and DOM snapshots |
 | `npm run test:debug` | Step through tests with the Playwright Inspector |
 | `npm run test:login` | Run the authentication tests only |
 | `npm run test:cart` | Run the cart and checkout tests only |
+| `npm run test:sort` | Run the product sorting tests only |
 | `npm run report` | Open the HTML report from the last run |
 | `npm run codegen` | Record browser actions and generate test code |
 
@@ -56,31 +57,51 @@ npx playwright test -g "Login with locked account"
 # serially, one test at a time
 npx playwright test --workers=1
 
-# with the browser visible / hidden
+# with the browser visible
 npx playwright test --headed
-npx playwright test --headless
 ```
+
+There is no `--headless` flag: headless is the CLI default, and this project overrides
+it to `false` in the config, so local runs are headed unless you change `headless` there.
 
 ## Project structure
 
 ```
-tests/                  specs (what is verified)
-  login.spec.ts           authentication
-  addToCart.spec.ts       cart + checkout
-helpers/                reusable actions (how it is done)
-  auth.ts                 login, asserting either success or an error
-  products.ts             add/remove from the products page, cart badge
-  cart.ts                 cart, checkout form, order placement
-locators/               selectors, grouped per page
-data/                   test accounts and password
-utils/strings.ts        expected texts, URLs, product names
-fixtures.ts             fixture that lands every test on baseURL
-playwright.config.ts    configuration
+tests/                        specs (what is verified)
+  login.spec.ts                 authentication, logout, authorization guard
+  addToCart.spec.ts             cart + checkout + order totals
+  sortProducts.spec.ts          product sorting
+helpers/                      reusable actions (how it is done)
+  auth.ts                       login, logout, asserting success or an error
+  products.ts                   add/remove, cart badge, sorting, list readers
+  cart.ts                       cart, checkout form, totals, order placement
+locators/                     selectors, one module per page
+  headerLocators.ts             header and burger menu (shared by every page)
+  loginPageLocators.ts          login form
+  shopPageLocators.ts           products page and sort dropdown
+  cartPageLocators.ts           cart page
+  checkoutPageLocators.ts       checkout step one / step two / complete
+data/
+  testAccountData.ts            test accounts and password
+  pricing.ts                    tax rate and money rounding
+utils/
+  strings.ts                    expected texts, URLs, product names, sort values
+  money.ts                      parses amounts out of labels like 'Tax: $2.40'
+fixtures.ts                   fixture that lands every test on baseURL
+playwright.config.ts          configuration
 ```
 
 The guiding idea: **specs describe the scenario, helpers perform the actions, locators know the selectors.** When the application UI changes you only touch `locators/`; when a flow changes you only touch `helpers/`.
 
+### Conventions
+
 Assertions use *web-first assertions* (`expect(locator).toHaveText(...)`), which are retried automatically until timeout — no `waitForTimeout`, and no comparisons against values read a single time.
+
+Each action helper performs its action **and waits for the effect to land in the DOM**, so callers never race a re-render. `addToCart` waits for the Remove button to appear, `removeFromCart` for the Add button to come back. Business assertions stay in the specs.
+
+Where a list is read as data rather than asserted directly — the sorting tests — the read is gated behind a web-first assertion first, because the row count does not change when the order does and therefore cannot serve as a wait.
+
+Order totals are checked against the line items, not against hardcoded figures: the item total must equal the sum of the line prices, tax must be `TAX_RATE` of that total rounded to two decimals, and the total must be the two added together. `TAX_RATE` lives in `data/pricing.ts`.
 
 ## Configuration
 

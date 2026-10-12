@@ -1,13 +1,14 @@
 {
   "name": "proiect-saucedemo",
   "version": "1.0.0",
-  "description": "Teste E2E Playwright pentru saucedemo.com",
+  "description": "Playwright E2E tests for saucedemo.com",
   "scripts": {
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug",
     "test:login": "playwright test tests/login.spec.ts",
     "test:cart": "playwright test tests/addToCart.spec.ts",
+    "test:sort": "playwright test tests/sortProducts.spec.ts",
     "report": "playwright show-report",
     "codegen": "playwright codegen https://www.saucedemo.com"
   },

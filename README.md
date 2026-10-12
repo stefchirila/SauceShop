@@ -130,10 +130,6 @@ To investigate a failing test step by step, set `trace: 'retain-on-failure'` in 
 npx playwright show-trace test-results/<test-folder>/trace.zip
 ```
 
-## Continuous integration
-
-The suite runs automatically on GitHub Actions (`.github/workflows/playwright.yml`) on every push and pull request against `main` / `master`. The HTML report is uploaded as an artifact and kept for 30 days.
-
 ## Test accounts
 
 All of them use the password `secret_sauce`, defined in `data/testAccountData.ts`:

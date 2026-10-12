@@ -7,9 +7,7 @@ export async function expectProductInCart(page: Page, productName: string) {
 }
 
 export async function removeItemFromCart(page: Page, productName: string) {
-    const formattedName = productName.toLowerCase().replace(/\s+/g, '-');
-    const removeButtonLocator = `[data-test="remove-${formattedName}"]`;
-    const removeButton = page.locator(removeButtonLocator);
+    const removeButton = page.locator(cartLocators.removeFromCartButton(productName));
 
     await expect(removeButton).toBeVisible();
     await removeButton.click();
@@ -38,7 +36,7 @@ export async function fillFirstName(page: Page, firstName: string) {
     await page.locator(checkoutErrorLocators.firstNameInput).fill(firstName);
 }
 
-export async function fillLasttName(page: Page, lastName: string) {
+export async function fillLastName(page: Page, lastName: string) {
     await page.locator(checkoutErrorLocators.lastNameInput).fill(lastName);
 }
 

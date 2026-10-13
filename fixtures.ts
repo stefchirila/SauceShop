@@ -1,6 +1,6 @@
 import { test as base } from '@playwright/test';
 
-/** Fiecare test porneste din pagina de login (baseURL). */
+/** Login - baseURL */
 export const test = base.extend({
   page: async ({ page }, use) => {
     await page.goto('/');

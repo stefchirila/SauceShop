@@ -5,7 +5,7 @@ import * as Product from '../helpers/products';
 import * as Cart from '../helpers/cart';
 
 const CHECKOUT_INFO = {
-  firstName: 'Stefan',
+  firstName: 'Alex',
   lastName: 'Chirila',
   zipCode: '700256',
 };
